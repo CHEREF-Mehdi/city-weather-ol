@@ -1,0 +1,31 @@
+# Exclure les répertoires et fichiers de dépendances
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Exclure les fichiers générés par l'IDE
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Exclure les fichiers temporaires
+*.tmp
+*.log
+*.cache
+
+# Exclure les fichiers système
+.DS_Store
+Thumbs.db
+
+# Exclure les fichiers de construction
+build
+dist
+
+# Exclure les fichiers de configuration non nécessaires
+*.env
+*.git
