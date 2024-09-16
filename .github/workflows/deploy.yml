@@ -21,7 +21,7 @@ jobs:
 
     - name: Set up Docker
       run: |
-        docker-compose build prod -d
+        docker compose build prod -d
 
     - name: Verify container is running
       run: |
@@ -39,4 +39,4 @@ jobs:
 
     - name: Clean up Docker containers
       run: |
-        docker-compose down prod
+        docker compose down prod
