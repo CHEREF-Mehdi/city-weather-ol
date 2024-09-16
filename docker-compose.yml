@@ -21,6 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: city-weather-ol
     ports:
       - '80:80'
     environment:
