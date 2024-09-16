@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages using Docker configuration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Set environment variables
+      env:
+        VITE_APPID: 539a92a71fbb1b6ee46f8afdfc95bb2e
+      run: |
+        echo "App ID is $VITE_APPID"
+
+    - name: Set up Docker
+      run: |
+        docker-compose build prod -d
+
+    - name: Verify container is running
+      run: |
+        docker ps -a
+
+    - name: Copy build artifacts
+      run: |
+        docker cp city-weather-ol:/app/dist ./dist
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+
+    - name: Clean up Docker containers
+      run: |
+        docker-compose down prod
