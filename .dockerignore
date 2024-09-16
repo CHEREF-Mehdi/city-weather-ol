@@ -27,5 +27,4 @@ build
 dist
 
 # Exclure les fichiers de configuration non nécessaires
-*.env
 *.git

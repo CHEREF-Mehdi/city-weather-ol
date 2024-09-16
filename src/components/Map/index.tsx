@@ -5,21 +5,28 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Feature } from 'ol';
-import Point from 'ol/geom/Point';
-import { Icon, Style } from 'ol/style';
+import { Style, Stroke, Fill } from 'ol/style';
 import 'ol/ol.css';
 import { fromLonLat } from 'ol/proj';
-import pin from '../../assets/pin.png';
-import { cities, getCoordinate } from '../../helpers/cities';
+import {
+  cities,
+  getCityFromDepartement,
+  getCoordinate,
+  parisCoordinate,
+} from '../../helpers/cities';
+import { GeoJSON } from 'ol/format';
 
 interface MapProps {
   selectedCity?: string;
+  setSetectedCity: (city?: string) => void;
 }
 
-const MapComponent: React.FC<MapProps> = ({ selectedCity }) => {
+const MapComponent: React.FC<MapProps> = ({
+  selectedCity,
+  setSetectedCity,
+}) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<Map>(
+  const [map] = useState<Map>(
     new Map({
       layers: [
         new TileLayer({
@@ -27,7 +34,7 @@ const MapComponent: React.FC<MapProps> = ({ selectedCity }) => {
         }),
       ],
       view: new View({
-        center: fromLonLat([2.35, 48.86]),
+        center: fromLonLat(parisCoordinate),
         zoom: 6,
       }),
     })
@@ -36,31 +43,33 @@ const MapComponent: React.FC<MapProps> = ({ selectedCity }) => {
   useEffect(() => {
     if (mapRef.current) {
       map.setTarget(mapRef.current);
-      const vectorSource = new VectorSource();
 
-      Object.entries(cities).forEach(([city, [lon, lat]]) => {
-        const feature = new Feature({
-          geometry: new Point(fromLonLat([lon, lat])),
-          name: city,
-        });
-
-        feature.setStyle(
-          new Style({
-            image: new Icon({
-              src: pin,
-              scale: 0.2,
+      Object.entries(cities).forEach(([_, { geojsonUrl }]) => {
+        map.addLayer(
+          new VectorLayer({
+            source: new VectorSource({
+              url: geojsonUrl,
+              format: new GeoJSON(),
+            }),
+            style: new Style({
+              stroke: new Stroke({
+                color: 'blue',
+                width: 2,
+              }),
+              fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)',
+              }),
             }),
           })
         );
-
-        vectorSource.addFeature(feature);
       });
 
-      map.addLayer(
-        new VectorLayer({
-          source: vectorSource,
-        })
-      );
+      map.on('click', function (event) {
+        map.forEachFeatureAtPixel(event.pixel, function (feature) {
+          const city = getCityFromDepartement(feature.getProperties().nom);
+          setSetectedCity(city);
+        });
+      });
 
       const handleResize = () => {
         map.updateSize();
@@ -74,18 +83,19 @@ const MapComponent: React.FC<MapProps> = ({ selectedCity }) => {
   }, []);
 
   useEffect(() => {
+    // zoom in/out from a selected city
     if (selectedCity) {
       map.setView(
         new View({
           center: fromLonLat(getCoordinate(selectedCity)),
-          zoom: 12,
+          zoom: 12, // zoom in if a city is selected
         })
       );
     } else {
       map.setView(
         new View({
-          center: fromLonLat([2.35, 48.86]),
-          zoom: 6,
+          center: fromLonLat(parisCoordinate),
+          zoom: 6, // zoom out if not
         })
       );
     }

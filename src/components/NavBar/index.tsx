@@ -1,14 +1,19 @@
 // src/components/NavBar.tsx
 import React from 'react';
-import CitySearch from '../CitySearch';
+import CitySearchComponent from '../CitySearch';
 import './style.css';
 
 interface NavBarProps {
   cities: string[];
   setSetectedCity: (city: string | undefined) => void;
+  selectedCity?: string;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ cities, setSetectedCity }) => {
+const NavBarComponent: React.FC<NavBarProps> = ({
+  cities,
+  setSetectedCity,
+  selectedCity,
+}) => {
   const handleSelectCity = (city: string | undefined) => {
     setSetectedCity(city);
   };
@@ -17,10 +22,14 @@ const NavBar: React.FC<NavBarProps> = ({ cities, setSetectedCity }) => {
     <nav className='navbar'>
       <h1 className='navbar-title'>Weather App</h1>
       <div className='navbar-search'>
-        <CitySearch cities={cities} onSelectCity={handleSelectCity} />
+        <CitySearchComponent
+          cities={cities}
+          onSelectCity={handleSelectCity}
+          selectedCity={selectedCity}
+        />
       </div>
     </nav>
   );
 };
 
-export default NavBar;
+export default NavBarComponent;

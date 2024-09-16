@@ -9,9 +9,12 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "5173:5173" # Port for Vite's dev server
+      - '5173:5173'
     environment:
       - NODE_ENV=development
+      - VITE_APPID=${VITE_APPID}
+    env_file:
+      - .env
 
   # Production service
   prod:
@@ -19,6 +22,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80" # Nginx will serve the production build on port 80
+      - '80:80'
     environment:
       - NODE_ENV=production
+      - VITE_APPID=${VITE_APPID}
+    env_file:
+      - .env

@@ -1,20 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 
 interface CitySearchProps {
   cities: string[];
   onSelectCity: (city: string | undefined) => void;
+  selectedCity?: string;
 }
 
-const CitySearch: React.FC<CitySearchProps> = ({ cities, onSelectCity }) => {
+const CitySearchComponent: React.FC<CitySearchProps> = ({
+  cities,
+  onSelectCity,
+  selectedCity,
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredCities, setFilteredCities] = useState<string[]>(cities);
+  const [filteredCities, setFilteredCities] = useState<string[]>([...cities]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    // update input search value when the city is selected by clicking on the map
+    if (searchTerm !== selectedCity) {
+      setSearchTerm(selectedCity || '');
+    }
+  }, [selectedCity]);
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value.trim());
     setIsDropdownOpen(true);
+
     if (value.trim()) {
       setFilteredCities(
         cities.filter((city) =>
@@ -26,18 +39,25 @@ const CitySearch: React.FC<CitySearchProps> = ({ cities, onSelectCity }) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearchInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === 'Enter') {
       if (!searchTerm) {
         onSelectCity(undefined);
       } else {
         if (filteredCities.length) {
           setSearchTerm(filteredCities[0]);
-          setIsDropdownOpen(false);
           onSelectCity(filteredCities[0]);
         }
       }
+      setIsDropdownOpen(false);
     }
+  };
+
+  const handleSearchInputFocus = () => {
+    setFilteredCities([...cities]);
+    setIsDropdownOpen(true);
   };
 
   const handleSelectCity = (city: string) => {
@@ -50,11 +70,11 @@ const CitySearch: React.FC<CitySearchProps> = ({ cities, onSelectCity }) => {
     <div className='city-search'>
       <input
         type='text'
-        value={searchTerm}
-        onChange={handleChange}
         placeholder='Search city...'
-        onFocus={() => setIsDropdownOpen(true)}
-        onKeyDown={handleKeyDown}
+        value={searchTerm}
+        onChange={handleSearchInputChange}
+        onFocus={handleSearchInputFocus}
+        onKeyDown={handleSearchInputKeyDown}
       />
       <img
         src='https://cdn-icons-png.flaticon.com/512/149/149852.png'
@@ -78,4 +98,4 @@ const CitySearch: React.FC<CitySearchProps> = ({ cities, onSelectCity }) => {
   );
 };
 
-export default CitySearch;
+export default CitySearchComponent;
