@@ -21,7 +21,7 @@ jobs:
 
     - name: Set up Docker
       run: |
-        docker compose build prod
+        docker compose build prod -e VITE_APPID=$VITE_APPID
 
     - name: Verify container is running
       run: |
