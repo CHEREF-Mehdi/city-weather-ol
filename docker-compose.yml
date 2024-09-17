@@ -12,9 +12,6 @@ services:
       - '5173:5173'
     environment:
       - NODE_ENV=development
-      - VITE_APPID=${VITE_APPID}
-    env_file:
-      - .env
 
   # Production service
   prod:
@@ -26,6 +23,3 @@ services:
       - '80:80'
     environment:
       - NODE_ENV=production
-      - VITE_APPID=${VITE_APPID}
-    env_file:
-      - .env
