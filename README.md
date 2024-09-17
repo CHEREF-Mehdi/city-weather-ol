@@ -1,3 +1,45 @@
+## Description
+
+This application displays weather forecasts for selected cities using **React.js**, **TypeScript**, and **OpenLayers**. It provides features like:
+
+- Displaying the locations of Toulouse, Paris, and Brest on a map.
+- Searching for these cities and zooming in on their locations.
+- Clicking on a city's location to view a 3-day weather forecast.
+
+The application is containerized using **Docker** and can be deployed effortlessly.
+
+## Prerequisites
+
+- Docker (used version 4.33.1)
+
+## Setup
+
+To clone the repository and get started, run the following commands:
+
+```bash
+git clone https://github.com/CHEREF-Mehdi/city-weather-ol.git
+cd city-weather-ol
+git checkout main
+```
+
+## Create .env file
+
+- Create your ".env" file (please refer to env.example file to put the required env variables)
+
+```
+VITE_APPID=<<API key>>
+```
+
+## Build and run the application
+
+```bash
+docker compose up prod --build
+```
+
+## Go to the URL
+
+http://localhost:80 have fun
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -22,7 +64,7 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 - Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
@@ -31,7 +73,7 @@ export default tseslint.config({
 
 ```js
 // eslint.config.js
-import react from 'eslint-plugin-react'
+import react from 'eslint-plugin-react';
 
 export default tseslint.config({
   // Set the react version
@@ -46,5 +88,5 @@ export default tseslint.config({
     ...react.configs.recommended.rules,
     ...react.configs['jsx-runtime'].rules,
   },
-})
+});
 ```
