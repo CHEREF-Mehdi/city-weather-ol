@@ -21,7 +21,7 @@ jobs:
 
     - name: Set up Docker
       run: |
-        docker compose build prod -d
+        docker compose build prod
 
     - name: Verify container is running
       run: |
